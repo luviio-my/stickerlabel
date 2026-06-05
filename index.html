@@ -248,14 +248,17 @@ kbd{
     #printArea,#printArea *{visibility:visible;}
     #printArea{
         display:block;position:absolute;top:0;left:0;
-        width:210mm;height:297mm;
     }
-    .page{width:210mm;height:297mm;page-break-after:always;}
+    .page{
+        width:210mm;height:297mm;
+        page-break-after:always;
+        overflow:hidden;
+    }
     .sheet{
         margin-left:8mm;margin-top:10mm;
         display:grid;
         grid-template-columns:repeat(5,38mm);
-        grid-template-rows:repeat(6,19mm);
+        grid-auto-rows:19mm;
         column-gap:4mm;row-gap:2mm;
     }
     .label{
@@ -558,8 +561,8 @@ function downloadLabels() {
     html += '*{box-sizing:border-box;margin:0;padding:0;}\n';
     html += 'body{font-family:Arial,Helvetica,sans-serif;}\n';
     html += '@page{size:A4 portrait;margin:0;}\n';
-    html += '.page{width:210mm;height:297mm;page-break-after:always;}\n';
-    html += '.sheet{margin-left:8mm;margin-top:10mm;display:grid;grid-template-columns:repeat(5,38mm);grid-template-rows:repeat(6,19mm);column-gap:4mm;row-gap:2mm;}\n';
+    html += '.page{width:210mm;height:297mm;page-break-after:always;overflow:hidden;}\n';
+    html += '.sheet{margin-left:8mm;margin-top:10mm;display:grid;grid-template-columns:repeat(5,38mm);grid-auto-rows:19mm;column-gap:4mm;row-gap:2mm;}\n';
     html += '.label{font-family:Arial,Helvetica,sans-serif;font-size:10px;font-weight:700;line-height:1.05;padding:1mm;white-space:pre-line;overflow:hidden;}\n';
     html += '</style>\n</head>\n<body>\n' + pagesHTML + '\n</body>\n</html>';
 
