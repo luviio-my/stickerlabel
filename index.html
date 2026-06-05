@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Sticker Label Generator</title>
+
+<style>
+
+*{
+    box-sizing:border-box;
+}
+
+body{
+    font-family:Arial,Helvetica,sans-serif;
+    padding:20px;
+}
+
+h2{
+    margin-bottom:10px;
+}
+
+textarea{
+    width:100%;
+    height:300px;
+    padding:10px;
+    font-family:monospace;
+}
+
+button{
+    padding:12px 20px;
+    margin-top:10px;
+    margin-right:10px;
+    cursor:pointer;
+}
+
+#preview{
+    margin-top:20px;
+}
+
+.preview-grid{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:10px;
+}
+
+.preview-label{
+    border:1px solid #ccc;
+    min-height:70px;
+    padding:5px;
+    font-size:11px;
+    font-weight:bold;
+    white-space:pre-line;
+}
+
+#printArea{
+    display:none;
+}
+
+/* PRINT */
+
+@page{
+    size:A4 portrait;
+    margin:0;
+}
+
+@media print{
+
+    body *{
+        visibility:hidden;
+    }
+
+    #printArea,
+    #printArea *{
+        visibility:visible;
+    }
+
+    #printArea{
+        display:block;
+        position:absolute;
+        top:0;
+        left:0;
+        width:210mm;
+        height:297mm;
+    }
+
+    .page{
+        width:210mm;
+        height:297mm;
+        page-break-after:always;
+    }
+
+    .sheet{
+
+        /* ADJUST THESE 2 VALUES IF NEEDED */
+        margin-left:8mm;
+        margin-top:10mm;
+
+        display:grid;
+
+        grid-template-columns:
+            repeat(5,38mm);
+
+        grid-template-rows:
+            repeat(6,19mm);
+
+        column-gap:4mm;
+        row-gap:2mm;
+    }
+
+    .label{
+        font-family:Arial,Helvetica,sans-serif;
+        font-size:10px;
+        font-weight:700;
+        line-height:1.05;
+        padding:1mm;
+        white-space:pre-line;
+        overflow:hidden;
+    }
+}
+
+</style>
+</head>
+<body>
+
+<h2>Sticker Label Generator</h2>
+
+<p>
+Each sticker must be separated by one blank line.
+</p>
+
+<textarea id="data">
+B3505877
+SKRF20C71P0
+2026-06-03
+MH5X4ZP/A
+
+B3503467
+SG2DKC2TCN2
+2026-06-03
+MHFE4ZP/A
+
+B3503429
+SM1QF962KWW
+2026-06-03
+MHFJ4ZP/A
+
+B3502365
+SH53794Q4D7
+2026-06-03
+MG8H4X/A
+
+B3502415
+SHTM6M37MC6
+2026-06-03
+MG8H4X/A
+
+B3504941
+SF0THSL01FBA0000LVC
+2026-06-03
+MXCK3ZA/A
+</textarea>
+
+<br>
+
+<button onclick="generateLabels()">
+Generate Preview
+</button>
+
+<button onclick="window.print()">
+Print
+</button>
+
+<div id="preview"></div>
+
+<div id="printArea"></div>
+
+<script>
+
+generateLabels();
+
+function generateLabels(){
+
+    const raw =
+        document.getElementById('data')
+        .value
+        .trim();
+
+    const labels =
+        raw
+        .split(/\n\s*\n/)
+        .filter(x => x.trim() !== '');
+
+    buildPreview(labels);
+    buildPrint(labels);
+}
+
+function buildPreview(labels){
+
+    const preview =
+        document.getElementById('preview');
+
+    preview.innerHTML='';
+
+    const grid =
+        document.createElement('div');
+
+    grid.className='preview-grid';
+
+    labels.forEach(text=>{
+
+        const div =
+            document.createElement('div');
+
+        div.className='preview-label';
+        div.textContent=text;
+
+        grid.appendChild(div);
+
+    });
+
+    preview.appendChild(grid);
+}
+
+function buildPrint(labels){
+
+    const printArea =
+        document.getElementById('printArea');
+
+    printArea.innerHTML='';
+
+    const perPage = 30;
+
+    for(let i=0;i<labels.length;i+=perPage){
+
+        const page =
+            document.createElement('div');
+
+        page.className='page';
+
+        const sheet =
+            document.createElement('div');
+
+        sheet.className='sheet';
+
+        const items =
+            labels.slice(i,i+perPage);
+
+        items.forEach(text=>{
+
+            const div =
+                document.createElement('div');
+
+            div.className='label';
+            div.textContent=text;
+
+            sheet.appendChild(div);
+
+        });
+
+        page.appendChild(sheet);
+        printArea.appendChild(page);
+
+    }
+
+}
+
+</script>
+
+</body>
+</html>
