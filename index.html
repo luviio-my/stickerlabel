@@ -1,270 +1,645 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
 <meta charset="UTF-8">
-<title>Sticker Label Generator</title>
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sticker Label Generator - Luviio Company</title>
 <style>
-
-*{
-    box-sizing:border-box;
+:root {
+    --bg:#f5f5f7;
+    --primary:#0071e3;
+    --primary-hover:#005bb5;
+    --text:#1d1d1f;
+    --text-secondary:#6e6e73;
+    --border:#d2d2d7;
+    --card:#ffffff;
+    --card-shadow:0 2px 16px rgba(0,0,0,0.06);
+    --input-bg:#ffffff;
+    --input-border:#d2d2d7;
+    --toast-bg:#1d1d1f;
+    --toast-text:#f5f5f7;
+    --preview-label-bg:#ffffff;
+    --preview-label-border:#e5e5ea;
 }
-
+[data-theme="dark"] {
+    --bg:#1c1c1e;
+    --primary:#0a84ff;
+    --primary-hover:#409cff;
+    --text:#f5f5f7;
+    --text-secondary:#98989d;
+    --border:#38383a;
+    --card:#2c2c2e;
+    --card-shadow:0 2px 16px rgba(0,0,0,0.3);
+    --input-bg:#1c1c1e;
+    --input-border:#48484a;
+    --toast-bg:#f5f5f7;
+    --toast-text:#1d1d1f;
+    --preview-label-bg:#2c2c2e;
+    --preview-label-border:#3a3a3c;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
 body{
-    font-family:Arial,Helvetica,sans-serif;
-    padding:20px;
+    font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','SF Pro Text','Helvetica Neue',Arial,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    min-height:100vh;
+    transition:background 0.35s ease, color 0.35s ease;
+    -webkit-font-smoothing:antialiased;
 }
-
-h2{
-    margin-bottom:10px;
+::selection{background:var(--primary);color:#fff;}
+.header{
+    background:var(--card);
+    border-bottom:1px solid var(--border);
+    padding:0 32px;
+    height:68px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    position:sticky;
+    top:0;
+    z-index:100;
+    backdrop-filter:blur(20px);
+    -webkit-backdrop-filter:blur(20px);
+    background:rgba(255,255,255,0.72);
+    transition:background 0.35s ease, border-color 0.35s ease;
 }
-
-textarea{
-    width:100%;
-    height:300px;
-    padding:10px;
-    font-family:monospace;
+[data-theme="dark"] .header{
+    background:rgba(44,44,46,0.72);
 }
-
-button{
-    padding:12px 20px;
-    margin-top:10px;
-    margin-right:10px;
-    cursor:pointer;
+.logo-area{display:flex;align-items:center;gap:12px;flex:1;min-width:0;}
+.logo-icon{
+    width:38px;height:38px;border-radius:10px;
+    background:linear-gradient(135deg,#0071e3,#00c6ff);
+    display:flex;align-items:center;justify-content:center;
+    font-weight:800;color:#fff;font-size:15px;letter-spacing:-0.5px;
+    flex-shrink:0;
 }
-
-#preview{
-    margin-top:20px;
+.header-center{text-align:center;flex:2;min-width:0;}
+.header-center h1{
+    font-size:17px;font-weight:700;letter-spacing:-0.3px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
 }
-
+.header-center p{
+    font-size:11px;color:var(--text-secondary);font-weight:500;
+    letter-spacing:0.2px;margin-top:1px;
+}
+.header-right{
+    display:flex;align-items:center;gap:16px;flex:1;
+    justify-content:flex-end;min-width:0;
+}
+.header-right .credit{
+    text-align:right;white-space:nowrap;
+}
+.header-right .credit-label{
+    font-size:10px;color:var(--text-secondary);
+    text-transform:uppercase;letter-spacing:0.5px;font-weight:600;
+}
+.header-right .credit-name{
+    font-size:13px;font-weight:600;
+}
+.theme-toggle{
+    width:52px;height:30px;border-radius:15px;
+    background:var(--border);border:none;cursor:pointer;
+    position:relative;transition:background 0.3s ease;
+    flex-shrink:0;
+}
+.theme-toggle.active{background:var(--primary);}
+.theme-toggle .toggle-knob{
+    width:24px;height:24px;border-radius:50%;
+    background:#fff;position:absolute;top:3px;left:3px;
+    transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);
+    box-shadow:0 1px 4px rgba(0,0,0,0.15);
+}
+.theme-toggle.active .toggle-knob{transform:translateX(22px);}
+.main-container{max-width:1100px;margin:0 auto;padding:28px 24px 60px;}
+.card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:24px;
+    box-shadow:var(--card-shadow);
+    margin-bottom:20px;
+    transition:background 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
+}
+.card-title{
+    font-size:13px;font-weight:700;text-transform:uppercase;
+    letter-spacing:0.6px;color:var(--text-secondary);margin-bottom:16px;
+}
+.input-group{margin-bottom:16px;}
+.input-group label{
+    display:block;font-size:14px;font-weight:600;
+    margin-bottom:6px;letter-spacing:-0.2px;
+}
+.input-group label span{
+    font-weight:400;color:var(--text-secondary);font-size:12px;
+}
+.input-field{
+    width:100%;padding:10px 14px;border-radius:10px;
+    border:1px solid var(--input-border);
+    background:var(--input-bg);color:var(--text);
+    font-family:inherit;font-size:14px;
+    transition:border-color 0.2s ease, box-shadow 0.2s ease;
+    outline:none;
+}
+.input-field:focus{
+    border-color:var(--primary);
+    box-shadow:0 0 0 3px rgba(0,113,227,0.15);
+}
+.input-field::placeholder{color:var(--text-secondary);opacity:0.6;}
+textarea.input-field{
+    height:260px;resize:vertical;
+    font-family:'SF Mono',SFMono-Regular,ui-monospace,Menlo,Monaco,monospace;
+    font-size:13px;line-height:1.55;
+}
+.label-counter{
+    display:flex;align-items:center;gap:8px;
+    margin-top:8px;font-size:13px;color:var(--text-secondary);
+}
+.label-counter .dot{
+    width:7px;height:7px;border-radius:50%;background:#34c759;
+    animation:pulse 2s ease-in-out infinite;
+}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
+.btn-row{
+    display:flex;flex-wrap:wrap;gap:10px;margin-top:20px;
+}
+.btn{
+    padding:10px 22px;border-radius:10px;font-size:14px;font-weight:600;
+    border:none;cursor:pointer;transition:all 0.2s ease;
+    letter-spacing:-0.2px;font-family:inherit;
+    display:inline-flex;align-items:center;gap:6px;
+}
+.btn:active{transform:scale(0.97);}
+.btn-primary{background:var(--primary);color:#fff;}
+.btn-primary:hover{background:var(--primary-hover);}
+.btn-secondary{background:var(--bg);color:var(--text);border:1px solid var(--border);}
+.btn-secondary:hover{background:var(--border);}
+.btn-danger{background:#ff3b30;color:#fff;}
+.btn-danger:hover{background:#e0342b;}
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.stat-item{
+    text-align:center;padding:14px 8px;
+    background:var(--bg);border-radius:12px;
+    transition:background 0.35s ease;
+}
+.stat-value{font-size:28px;font-weight:800;letter-spacing:-1px;color:var(--primary);}
+.stat-label{font-size:11px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.4px;margin-top:2px;}
 .preview-grid{
     display:grid;
     grid-template-columns:repeat(5,1fr);
     gap:10px;
 }
-
 .preview-label{
-    border:1px solid #ccc;
-    min-height:70px;
-    padding:5px;
+    background:var(--preview-label-bg);
+    border:1px solid var(--preview-label-border);
+    border-radius:10px;
+    min-height:68px;
+    padding:8px;
     font-size:11px;
-    font-weight:bold;
+    font-weight:600;
     white-space:pre-line;
+    font-family:'SF Mono',SFMono-Regular,ui-monospace,Menlo,Monaco,monospace;
+    line-height:1.35;
+    transition:all 0.2s ease;
+    overflow:hidden;
+    color:var(--text);
 }
-
-#printArea{
-    display:none;
+.preview-label:hover{
+    border-color:var(--primary);
+    box-shadow:0 2px 12px rgba(0,113,227,0.12);
+    transform:translateY(-1px);
 }
-
-/* PRINT */
-
-@page{
-    size:A4 portrait;
-    margin:0;
+.shortcuts{
+    display:flex;flex-wrap:wrap;gap:16px;
+    font-size:12px;color:var(--text-secondary);
 }
-
+.shortcut{display:flex;align-items:center;gap:6px;}
+kbd{
+    display:inline-block;padding:2px 7px;border-radius:5px;
+    background:var(--bg);border:1px solid var(--border);
+    font-family:inherit;font-size:11px;font-weight:600;
+    color:var(--text);transition:background 0.35s ease, border-color 0.35s ease;
+}
+.toast-container{
+    position:fixed;bottom:28px;right:28px;z-index:9999;
+    display:flex;flex-direction:column-reverse;gap:10px;
+}
+.toast{
+    background:var(--toast-bg);color:var(--toast-text);
+    padding:12px 20px;border-radius:12px;
+    font-size:14px;font-weight:600;
+    box-shadow:0 8px 30px rgba(0,0,0,0.15);
+    animation:toastIn 0.35s cubic-bezier(0.4,0,0.2,1);
+    display:flex;align-items:center;gap:8px;
+    font-family:inherit;
+}
+.toast .toast-icon{font-size:16px;}
+.toast.removing{animation:toastOut 0.3s ease forwards;}
+@keyframes toastIn{from{opacity:0;transform:translateY(16px) scale(0.95);}to{opacity:1;transform:translateY(0) scale(1);}}
+@keyframes toastOut{from{opacity:1;transform:translateY(0) scale(1);}to{opacity:0;transform:translateY(8px) scale(0.95);}}
+.footer{
+    text-align:center;padding:20px;font-size:12px;
+    color:var(--text-secondary);font-weight:500;
+}
+#printArea{display:none;}
+@page{size:A4 portrait;margin:0;}
 @media print{
-
-    body *{
-        visibility:hidden;
-    }
-
-    #printArea,
-    #printArea *{
-        visibility:visible;
-    }
-
+    body *{visibility:hidden;}
+    #printArea,#printArea *{visibility:visible;}
     #printArea{
-        display:block;
-        position:absolute;
-        top:0;
-        left:0;
-        width:210mm;
-        height:297mm;
+        display:block;position:absolute;top:0;left:0;
+        width:210mm;height:297mm;
     }
-
-    .page{
-        width:210mm;
-        height:297mm;
-        page-break-after:always;
-    }
-
+    .page{width:210mm;height:297mm;page-break-after:always;}
     .sheet{
-
-        /* ADJUST THESE 2 VALUES IF NEEDED */
-        margin-left:8mm;
-        margin-top:10mm;
-
+        margin-left:8mm;margin-top:10mm;
         display:grid;
-
-        grid-template-columns:
-            repeat(5,38mm);
-
-        grid-template-rows:
-            repeat(6,19mm);
-
-        column-gap:4mm;
-        row-gap:2mm;
+        grid-template-columns:repeat(5,38mm);
+        grid-template-rows:repeat(6,19mm);
+        column-gap:4mm;row-gap:2mm;
     }
-
     .label{
         font-family:Arial,Helvetica,sans-serif;
-        font-size:10px;
-        font-weight:700;
-        line-height:1.05;
-        padding:1mm;
-        white-space:pre-line;
-        overflow:hidden;
+        font-size:10px;font-weight:700;
+        line-height:1.05;padding:1mm;
+        white-space:pre-line;overflow:hidden;
     }
 }
-
+@media(max-width:900px){
+    .preview-grid{grid-template-columns:repeat(3,1fr);}
+    .stats-row{grid-template-columns:repeat(3,1fr);}
+}
+@media(max-width:600px){
+    .header{padding:0 16px;height:58px;}
+    .header-center h1{font-size:14px;}
+    .header-center p{display:none;}
+    .header-right .credit-label{display:none;}
+    .main-container{padding:16px 12px 40px;}
+    .card{padding:16px;border-radius:14px;}
+    .preview-grid{grid-template-columns:repeat(2,1fr);}
+    .stats-row{grid-template-columns:1fr 1fr 1fr;}
+    .btn{padding:9px 16px;font-size:13px;}
+    .logo-icon{width:32px;height:32px;font-size:13px;border-radius:8px;}
+    .shortcuts{flex-direction:column;gap:8px;}
+}
 </style>
 </head>
 <body>
 
-<h2>Sticker Label Generator</h2>
+<!-- Header -->
+<header class="header">
+    <div class="logo-area">
+        <div class="logo-icon">L</div>
+    </div>
+    <div class="header-center">
+        <h1>Sticker Label Generator</h1>
+        <p>Professional Label Printing System</p>
+    </div>
+    <div class="header-right">
+        <div class="credit">
+            <div class="credit-label">Created By</div>
+            <div class="credit-name">Danial Danish</div>
+        </div>
+        <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
+            <div class="toggle-knob"></div>
+        </button>
+    </div>
+</header>
 
-<p>
-Each sticker must be separated by one blank line.
-</p>
+<!-- Main Content -->
+<div class="main-container">
 
-<textarea id="data">
-B3505877
-SKRF20C71P0
-2026-06-03
-MH5X4ZP/A
+    <!-- Input Card -->
+    <div class="card">
+        <div class="card-title">Input</div>
+        <div class="input-group">
+            <label>Folder Name <span>(used for download filename)</span></label>
+            <input type="text" id="folderName" class="input-field" placeholder="Example: AppleCare June 2026">
+        </div>
+        <div class="input-group">
+            <label>Sticker Data <span>(separate each sticker with a blank line)</span></label>
+            <textarea id="data" class="input-field" placeholder="B3505877&#10;SKRF20C71P0&#10;2026-06-03&#10;MH5X4ZP/A&#10;&#10;B3503467&#10;SG2DKC2TCN2&#10;2026-06-03&#10;MHFE4ZP/A"></textarea>
+            <div class="label-counter">
+                <div class="dot"></div>
+                <span id="liveCounter">0 Labels Loaded</span>
+            </div>
+        </div>
+        <div class="btn-row">
+            <button class="btn btn-primary" onclick="generateLabels()">Generate Preview</button>
+            <button class="btn btn-secondary" onclick="printLabels()">Print Labels</button>
+            <button class="btn btn-secondary" onclick="downloadLabels()">Download Labels</button>
+            <button class="btn btn-danger" onclick="clearAll()">Clear All</button>
+        </div>
+    </div>
 
-B3503467
-SG2DKC2TCN2
-2026-06-03
-MHFE4ZP/A
+    <!-- Statistics Card -->
+    <div class="card">
+        <div class="card-title">Statistics</div>
+        <div class="stats-row">
+            <div class="stat-item">
+                <div class="stat-value" id="statTotal">0</div>
+                <div class="stat-label">Total Labels</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="statPages">0</div>
+                <div class="stat-label">Total Pages</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="statPerPage">30</div>
+                <div class="stat-label">Labels Per Page</div>
+            </div>
+        </div>
+    </div>
 
-B3503429
-SM1QF962KWW
-2026-06-03
-MHFJ4ZP/A
+    <!-- Preview Card -->
+    <div class="card">
+        <div class="card-title">Preview</div>
+        <div id="preview">
+            <div class="preview-grid" id="previewGrid"></div>
+        </div>
+    </div>
 
-B3502365
-SH53794Q4D7
-2026-06-03
-MG8H4X/A
+    <!-- Shortcuts Card -->
+    <div class="card">
+        <div class="card-title">Keyboard Shortcuts</div>
+        <div class="shortcuts">
+            <div class="shortcut"><kbd>Ctrl</kbd>+<kbd>Enter</kbd> Generate Preview</div>
+            <div class="shortcut"><kbd>Ctrl</kbd>+<kbd>P</kbd> Print Labels</div>
+            <div class="shortcut"><kbd>Ctrl</kbd>+<kbd>S</kbd> Download Labels</div>
+        </div>
+    </div>
 
-B3502415
-SHTM6M37MC6
-2026-06-03
-MG8H4X/A
+    <div class="footer">Luviio Company &mdash; Sticker Label Generator</div>
+</div>
 
-B3504941
-SF0THSL01FBA0000LVC
-2026-06-03
-MXCK3ZA/A
-</textarea>
-
-<br>
-
-<button onclick="generateLabels()">
-Generate Preview
-</button>
-
-<button onclick="window.print()">
-Print
-</button>
-
-<div id="preview"></div>
-
+<!-- Print Area (hidden, used only during print) -->
 <div id="printArea"></div>
 
+<!-- Toast Container -->
+<div class="toast-container" id="toastContainer"></div>
+
 <script>
+/* ==============================
+   STATE & CONSTANTS
+   ============================== */
+const PER_PAGE = 30;
+const STORAGE_KEY = 'luviio_sticker_data';
+const THEME_KEY = 'luviio_sticker_theme';
+const FOLDER_KEY = 'luviio_sticker_folder';
 
-generateLabels();
+/* ==============================
+   THEME
+   ============================== */
+function initTheme() {
+    const saved = localStorage.getItem(THEME_KEY);
+    if (saved === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        document.getElementById('themeToggle').classList.add('active');
+    }
+}
 
-function generateLabels(){
+function toggleTheme() {
+    const toggle = document.getElementById('themeToggle');
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    if (isDark) {
+        document.documentElement.setAttribute('data-theme', 'light');
+        toggle.classList.remove('active');
+        localStorage.setItem(THEME_KEY, 'light');
+    } else {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        toggle.classList.add('active');
+        localStorage.setItem(THEME_KEY, 'dark');
+    }
+}
 
-    const raw =
-        document.getElementById('data')
-        .value
-        .trim();
+/* ==============================
+   TOAST NOTIFICATIONS
+   ============================== */
+function showToast(message, icon) {
+    icon = icon || '\u2713';
+    const container = document.getElementById('toastContainer');
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.innerHTML = '<span class="toast-icon">' + icon + '</span> ' + message;
+    container.appendChild(toast);
+    setTimeout(function() {
+        toast.classList.add('removing');
+        setTimeout(function() { toast.remove(); }, 300);
+    }, 2800);
+}
 
-    const labels =
-        raw
-        .split(/\n\s*\n/)
-        .filter(x => x.trim() !== '');
+/* ==============================
+   LOCAL STORAGE / AUTO SAVE
+   ============================== */
+function autoSave() {
+    localStorage.setItem(STORAGE_KEY, document.getElementById('data').value);
+    localStorage.setItem(FOLDER_KEY, document.getElementById('folderName').value);
+}
 
+function autoRestore() {
+    const savedData = localStorage.getItem(STORAGE_KEY);
+    const savedFolder = localStorage.getItem(FOLDER_KEY);
+    if (savedData !== null) document.getElementById('data').value = savedData;
+    if (savedFolder !== null) document.getElementById('folderName').value = savedFolder;
+}
+
+/* ==============================
+   PARSE LABELS
+   ============================== */
+function parseLabels() {
+    const raw = document.getElementById('data').value.trim();
+    if (!raw) return [];
+    return raw.split(/\n\s*\n/).filter(function(x) { return x.trim() !== ''; });
+}
+
+/* ==============================
+   LIVE COUNTER
+   ============================== */
+function updateLiveCounter() {
+    const labels = parseLabels();
+    const count = labels.length;
+    document.getElementById('liveCounter').textContent = count + ' Label' + (count !== 1 ? 's' : '') + ' Loaded';
+}
+
+/* ==============================
+   GENERATE PREVIEW
+   ============================== */
+function generateLabels() {
+    autoSave();
+    const labels = parseLabels();
     buildPreview(labels);
     buildPrint(labels);
+    updateStats(labels.length);
+    if (labels.length > 0) {
+        showToast('Labels Generated Successfully', '\u2713');
+    } else {
+        showToast('No labels found', '\u26A0');
+    }
 }
 
-function buildPreview(labels){
-
-    const preview =
-        document.getElementById('preview');
-
-    preview.innerHTML='';
-
-    const grid =
-        document.createElement('div');
-
-    grid.className='preview-grid';
-
-    labels.forEach(text=>{
-
-        const div =
-            document.createElement('div');
-
-        div.className='preview-label';
-        div.textContent=text;
-
+function buildPreview(labels) {
+    const grid = document.getElementById('previewGrid');
+    grid.innerHTML = '';
+    labels.forEach(function(text) {
+        const div = document.createElement('div');
+        div.className = 'preview-label';
+        div.textContent = text;
         grid.appendChild(div);
-
     });
-
-    preview.appendChild(grid);
 }
 
-function buildPrint(labels){
-
-    const printArea =
-        document.getElementById('printArea');
-
-    printArea.innerHTML='';
-
-    const perPage = 30;
-
-    for(let i=0;i<labels.length;i+=perPage){
-
-        const page =
-            document.createElement('div');
-
-        page.className='page';
-
-        const sheet =
-            document.createElement('div');
-
-        sheet.className='sheet';
-
-        const items =
-            labels.slice(i,i+perPage);
-
-        items.forEach(text=>{
-
-            const div =
-                document.createElement('div');
-
-            div.className='label';
-            div.textContent=text;
-
+function buildPrint(labels) {
+    const printArea = document.getElementById('printArea');
+    printArea.innerHTML = '';
+    for (var i = 0; i < labels.length; i += PER_PAGE) {
+        var page = document.createElement('div');
+        page.className = 'page';
+        var sheet = document.createElement('div');
+        sheet.className = 'sheet';
+        var items = labels.slice(i, i + PER_PAGE);
+        items.forEach(function(text) {
+            var div = document.createElement('div');
+            div.className = 'label';
+            div.textContent = text;
             sheet.appendChild(div);
-
         });
-
         page.appendChild(sheet);
         printArea.appendChild(page);
-
     }
-
 }
 
-</script>
+function updateStats(total) {
+    document.getElementById('statTotal').textContent = total;
+    document.getElementById('statPages').textContent = total === 0 ? 0 : Math.ceil(total / PER_PAGE);
+    document.getElementById('statPerPage').textContent = PER_PAGE;
+}
 
+/* ==============================
+   PRINT
+   ============================== */
+function printLabels() {
+    autoSave();
+    const labels = parseLabels();
+    if (labels.length === 0) {
+        showToast('No labels to print', '\u26A0');
+        return;
+    }
+    buildPrint(labels);
+    window.print();
+}
+
+/* ==============================
+   DOWNLOAD
+   ============================== */
+function downloadLabels() {
+    autoSave();
+    const labels = parseLabels();
+    if (labels.length === 0) {
+        showToast('No labels to download', '\u26A0');
+        return;
+    }
+    const folderName = document.getElementById('folderName').value.trim() || 'Sticker-Labels';
+    const filename = folderName + '-Labels.html';
+
+    /* Build the standalone HTML file with identical print layout */
+    var pagesHTML = '';
+    for (var i = 0; i < labels.length; i += PER_PAGE) {
+        var items = labels.slice(i, i + PER_PAGE);
+        pagesHTML += '<div class="page"><div class="sheet">';
+        items.forEach(function(text) {
+            /* Escape HTML entities in label text */
+            var escaped = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+            pagesHTML += '<div class="label">' + escaped + '</div>';
+        });
+        pagesHTML += '</div></div>';
+    }
+
+    var html = '<!DOCTYPE html>\n<html lang="en">\n<head>\n<meta charset="UTF-8">\n<title>' + folderName + ' - Labels</title>\n<style>\n';
+    html += '*{box-sizing:border-box;margin:0;padding:0;}\n';
+    html += 'body{font-family:Arial,Helvetica,sans-serif;}\n';
+    html += '@page{size:A4 portrait;margin:0;}\n';
+    html += '.page{width:210mm;height:297mm;page-break-after:always;}\n';
+    html += '.sheet{margin-left:8mm;margin-top:10mm;display:grid;grid-template-columns:repeat(5,38mm);grid-template-rows:repeat(6,19mm);column-gap:4mm;row-gap:2mm;}\n';
+    html += '.label{font-family:Arial,Helvetica,sans-serif;font-size:10px;font-weight:700;line-height:1.05;padding:1mm;white-space:pre-line;overflow:hidden;}\n';
+    html += '</style>\n</head>\n<body>\n' + pagesHTML + '\n</body>\n</html>';
+
+    var blob = new Blob([html], {type: 'text/html;charset=utf-8'});
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    showToast('Downloaded Successfully', '\u2713');
+}
+
+/* ==============================
+   CLEAR ALL
+   ============================== */
+function clearAll() {
+    document.getElementById('data').value = '';
+    document.getElementById('folderName').value = '';
+    document.getElementById('previewGrid').innerHTML = '';
+    document.getElementById('printArea').innerHTML = '';
+    updateStats(0);
+    updateLiveCounter();
+    autoSave();
+    showToast('Data Cleared', '\u2713');
+}
+
+/* ==============================
+   KEYBOARD SHORTCUTS
+   ============================== */
+document.addEventListener('keydown', function(e) {
+    /* Ctrl+Enter => Generate Preview */
+    if (e.ctrlKey && e.key === 'Enter') {
+        e.preventDefault();
+        generateLabels();
+    }
+    /* Ctrl+P => Print (override browser print) */
+    if (e.ctrlKey && e.key === 'p') {
+        e.preventDefault();
+        printLabels();
+    }
+    /* Ctrl+S => Download */
+    if (e.ctrlKey && e.key === 's') {
+        e.preventDefault();
+        downloadLabels();
+    }
+});
+
+/* ==============================
+   EVENT LISTENERS
+   ============================== */
+document.getElementById('data').addEventListener('input', function() {
+    updateLiveCounter();
+    autoSave();
+});
+document.getElementById('folderName').addEventListener('input', function() {
+    autoSave();
+});
+
+/* ==============================
+   INIT
+   ============================== */
+initTheme();
+autoRestore();
+updateLiveCounter();
+
+/* Generate initial preview if there is data */
+(function() {
+    var labels = parseLabels();
+    if (labels.length > 0) {
+        buildPreview(labels);
+        buildPrint(labels);
+        updateStats(labels.length);
+    } else {
+        updateStats(0);
+    }
+})();
+</script>
 </body>
 </html>
